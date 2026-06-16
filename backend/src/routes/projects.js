@@ -82,4 +82,44 @@ router.post("/:projectId/simulate",authValidate,async(req,res)=>{
   }
 })
 
+// General simulate endpoint for unsaved designs
+router.post("/simulate", authValidate, async (req, res) => {
+  try {
+    const { archiJson, reqPerSec } = req.body
+    if (!archiJson) {
+      return res.status(400).json({ msg: "archiJson configuration is required" })
+    }
+    const sim_json = simulate(archiJson, reqPerSec)
+    return res.status(200).json({ sim_json, msg: "simulation successful" })
+  } catch (err) {
+      return res.status(500).json({ error: err.message, msg: "simulation error" })
+  }
+})
+
+// Update project endpoint
+router.put("/:projectId", authValidate, async (req, res) => {
+  try {
+    const { projectId } = req.params
+    const userId = req.user.userId
+    const { name, archiJson } = req.body
+
+    if (!name) {
+      return res.status(400).json({ msg: "Project name is required" })
+    }
+
+    const db_query = `UPDATE projects SET name=$1, archi_json=$2 
+                      WHERE project_id=$3 AND user_id=$4 RETURNING *`
+    const db_res = await pool.query(db_query, [name, archiJson, projectId, userId])
+    
+    if (db_res.rows.length === 0) {
+      return res.status(404).json({ msg: "project not found or unauthorized" })
+    }
+    
+    return res.status(200).json({ project: db_res.rows[0], msg: "project updated successfully" })
+  } catch (err) {
+      return res.status(500).json({ error: err.message, msg: "database error" })
+  }
+})
+
 module.exports = router
+
