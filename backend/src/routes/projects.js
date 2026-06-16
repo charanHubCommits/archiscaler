@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const authValidate = require("../middleware/auth.js")
 const pool = require("../pool")
-const simulater = require("../simulate")
+const simulate = require("../simulate")
 
 router.get("/:projectId",authValidate,async (req,res) => {
   try {
@@ -63,16 +63,18 @@ router.get("/",authValidate,async(req,res)=>{
   }
 })
 
-router.get("/:projectId/simulte",authValidate,async(req,res)=>{
+router.post("/:projectId/simulate",authValidate,async(req,res)=>{
   try {
     const {projectId} = req.params
-    const db_query = `SELECT archi_json from projects WHERE project_id=$1`
-    const db_res = await pool.query(db_query,[projectId])
+    const {reqPerSec} = req.body
+    const userId = req.user.userId
+    const db_query = `SELECT archi_json from projects WHERE project_id=$1 AND user_id=$2`
+    const db_res = await pool.query(db_query,[projectId,userId])
     const {archi_json} = db_res.rows[0]
     if(!archi_json){
       return res.status(404).json({msg:"no architecture found"})
     }
-    const sim_json = simulater(archi_json)
+    const sim_json = simulate(archi_json,reqPerSec)
     return res.status(200).json({sim_json,msg:"simulation successfull"})
   } catch (err) {
       return res.status(500).json({error:err.message,msg:"database errror"})
