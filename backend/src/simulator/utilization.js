@@ -5,7 +5,7 @@ function utilization(nodes, traffic){
     const nodeTraffic = traffic[node.id] || 0;
 
     const utilization =
-      (nodeTraffic / node.capacity) * 100;
+      node.capacity > 0 ? (nodeTraffic / node.capacity) * 100 : 0;
 
     result.push({
       id: node.id,
