@@ -1,6 +1,7 @@
-const buildGraph = require("./graph")
-const propagateTraffic = require("./traffic")
+const buildGraph = require("./buildGraph")
+const propagateTraffic = require("./propagateTraffic")
 const calculateUtilization = require("./utilization")
+
 
 function simulate(architecture, rps){
 
