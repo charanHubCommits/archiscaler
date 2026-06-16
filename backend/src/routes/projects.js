@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const authValidate = require("../middleware/auth.js")
 const pool = require("../pool")
-const simulate = require("../simulate")
+const simulate = require("../simulator")
+
 
 router.get("/:projectId",authValidate,async (req,res) => {
   try {

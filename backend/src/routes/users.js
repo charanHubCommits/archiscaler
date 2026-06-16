@@ -6,7 +6,7 @@ const authValidate = require("../middleware/auth.js")
 router.get("/:userId",authValidate,async(req,res)=>{
   const {userId} = req.params;
 
-  const db_query = `SELECT username FROM users WHERE users_id=$1`
+  const db_query = `SELECT username FROM users WHERE user_id=$1`
   const db_res = await pool.query(db_query,[userId])
 
   res.status(200).json(db_res.rows)

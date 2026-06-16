@@ -9,14 +9,14 @@ const jwt = require("jsonwebtoken")
 router.post("/register",async (req,res) => {
   try {
     const {username,email,password} = req.body
-    const hashedPass = bcrypt.hash(password,10)
-    const db_query = `INSERT INTO users (username,email,password)
+    const hashedPass = await bcrypt.hash(password,10)
+    const db_query = `INSERT INTO users (username,email,password_hash)
                       VALUES ($1,$2,$3)`
     const db_res = await pool.query(db_query,[username,email,hashedPass])
     
     res.status(201).json({msg:"Successfully Registered"})
   } catch (err) {
-      res.status(500).json({erro:err.message,msg:"Failed to register"})
+      res.status(500).json({error:err.message,msg:"Failed to register"})
   }   
 })
 
@@ -25,16 +25,18 @@ router.post("/login",async(req,res) => {
     const {username,password} = req.body
     const db_query = `SELECT user_id,password_hash FROM users WHERE username=$1`
     const db_res = await pool.query(db_query,[username])
-    if(db_res.rows == 0){
+    if(db_res.rows.length === 0){
       return res.status(401).json({msg:"user does not exist"})
     }
     const isMatch = await bcrypt.compare(password,db_res.rows[0].password_hash)
     if(isMatch){
-      const token = jwt.sign(db_res.rows[0].user_id,process.env.JWT_SECRET)
+      const token = jwt.sign({userId: db_res.rows[0].user_id},process.env.JWT_SECRET)
       return res.status(200).json({msg:"login successfull",token})
+    } else {
+      return res.status(401).json({msg:"invalid credentials"})
     }
   } catch (err) {
-      return res.status(500).json({erro:err.message,msg:"database error"})
+      return res.status(500).json({error:err.message,msg:"database error"})
   }
 })
 
