@@ -136,7 +136,8 @@ export default function WorkspacePage() {
   const fetchProjects = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:3001/projects", {
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL+"/projects";
+      const response = await fetch(url, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -154,7 +155,8 @@ export default function WorkspacePage() {
     if (!id) return;
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`http://localhost:3001/projects/${id}`, {
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL+`/projects/${id}`;
+      const response = await fetch(url, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -194,7 +196,8 @@ export default function WorkspacePage() {
     try {
       let response;
       if (selectedProjectId) {
-        response = await fetch(`http://localhost:3001/projects/${selectedProjectId}`, {
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL+`/projects/${selectedProjectId}`;
+        const response = await fetch(url, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -203,7 +206,8 @@ export default function WorkspacePage() {
           body: JSON.stringify(payload)
         });
       } else {
-        response = await fetch(`http://localhost:3001/projects`, {
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL+`/projects`
+        response = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -354,7 +358,8 @@ export default function WorkspacePage() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/projects/simulate`, {
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL+`/projects/simulate`
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

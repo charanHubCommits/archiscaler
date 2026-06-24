@@ -53,7 +53,8 @@ function AuthForm() {
       : { username, email: `${username}@archiscaler.internal`, password }; // satisfies backend contract requiring email
 
     try {
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const url = process.url.NEXT_PUBLIC_BACKEND_URL+`${endpoint}`
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
