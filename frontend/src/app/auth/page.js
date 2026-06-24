@@ -53,7 +53,7 @@ function AuthForm() {
       : { username, email: `${username}@archiscaler.internal`, password }; // satisfies backend contract requiring email
 
     try {
-      const url = process.url.NEXT_PUBLIC_BACKEND_URL+`${endpoint}`
+      const url = process.env.NEXT_PUBLIC_BACKEND_URL+`${endpoint}`
       const response = await fetch(url, {
         method: "POST",
         headers: {
