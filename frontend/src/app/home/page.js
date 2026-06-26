@@ -35,6 +35,7 @@ import {
   Database,
   Shuffle
 } from "lucide-react";
+import Cookies from "js-cookie"
 
 const nodeTypes = {
   client: ClientNode,
@@ -123,7 +124,7 @@ export default function WorkspacePage() {
 
   // Auth guard and initial data loading
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     const user = localStorage.getItem("username");
     if (!token) {
       router.push("/auth?tab=login");
@@ -134,7 +135,7 @@ export default function WorkspacePage() {
   }, [router]);
 
   const fetchProjects = async () => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     try {
       const url = process.env.NEXT_PUBLIC_BACKEND_URL+"/projects";
       const response = await fetch(url, {
@@ -153,7 +154,7 @@ export default function WorkspacePage() {
 
   const loadProject = async (id) => {
     if (!id) return;
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     try {
       const url = process.env.NEXT_PUBLIC_BACKEND_URL+`/projects/${id}`;
       const response = await fetch(url, {
@@ -187,7 +188,7 @@ export default function WorkspacePage() {
       return;
     }
 
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     const payload = {
       name: projectName,
       archiJson: { nodes, edges }
@@ -330,7 +331,7 @@ export default function WorkspacePage() {
   const runSimulation = async () => {
     setSimulationRunning(true);
     setErrorMsg("");
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
 
     const hasClient = nodes.some(n => n.id === "client");
     if (!hasClient) {
@@ -397,6 +398,7 @@ export default function WorkspacePage() {
   // Sign out
   const handleSignOut = () => {
     localStorage.clear();
+    Cookies.remove("token")
     router.push("/");
   };
 

@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Server, Database, Activity, ArrowRight, ShieldCheck, Zap } from "lucide-react";
-
+import Cookies from "js-cookie"
 export default function WelcomePage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     if (token) {
       setIsLoggedIn(true);
     }

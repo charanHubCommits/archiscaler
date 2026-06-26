@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, User, AlertCircle } from "lucide-react";
+import Cookies from "js-cookie"
 
 function AuthForm() {
   const router = useRouter();
@@ -29,7 +30,7 @@ function AuthForm() {
 
   // Check if already logged in
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     if (token) {
       router.push("/home");
     }
@@ -69,7 +70,7 @@ function AuthForm() {
       }
 
       if (isLogin) {
-        localStorage.setItem("token", data.token);
+        Cookies.set("token", data.token,{expires: 7});
         localStorage.setItem("username", username);
         setSuccess("Login successful! Redirecting...");
         setTimeout(() => {
